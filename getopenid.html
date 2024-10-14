@@ -12,7 +12,7 @@
     <script>
         function getOpenID() {
             const appID = 'wx991eecad5206930f'; // 替换为你的公众号 AppID
-            const redirectURI = encodeURIComponent("https://free-job.cn/callback"); // 当前页面 URL 作为回调地址
+            const redirectURI = encodeURIComponent(window.location.href); // 当前页面 URL 作为回调地址
             const state = '123'; // 状态参数，可以随意设定
             const scope = 'snsapi_base'; // 使用静默授权，仅获取 OpenID
             
