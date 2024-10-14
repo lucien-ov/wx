@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>微信 OpenID 测试</title>
+</head>
+<body>
+    <h2>点击按钮获取 OpenID</h2>
+    <button onclick="getOpenID()">获取 OpenID</button>
+
+    <script>
+        function getOpenID() {
+            const appID = 'YOUR_APPID'; // 替换为你的公众号 AppID
+            const redirectURI = encodeURIComponent(window.location.href); // 当前页面 URL 作为回调地址
+            const state = '123'; // 状态参数，可以随意设定
+            const scope = 'snsapi_base'; // 使用静默授权，仅获取 OpenID
+            
+            const authURL = `https://open.weixin.qq.com/connect/oauth2/authorize?appid=${appID}&redirect_uri=${redirectURI}&response_type=code&scope=${scope}&state=${state}#wechat_redirect`;
+            
+            // 跳转到微信授权页面
+            window.location.href = authURL;
+        }
+
+        // 处理微信授权回调
+        const urlParams = new URLSearchParams(window.location.search);
+        const code = urlParams.get('code');
+        
+        if (code) {
+            const appID = 'wx991eecad5206930f'; // 再次替换为你的公众号 AppID
+            const appSecret = 'dbf51c67e2dc8073a2f9cbded96ff81a'; // 替换为你的公众号 AppSecret
+            
+            // 获取 OpenID
+            fetch(`https://api.weixin.qq.com/sns/oauth2/access_token?appid=${appID}&secret=${appSecret}&code=${code}&grant_type=authorization_code`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.openid) {
+                        alert(`你的 OpenID 是: ${data.openid}`);
+                    } else {
+                        console.error('获取 OpenID 失败', data);
+                        alert('获取 OpenID 失败，请检查控制台日志。');
+                    }
+                })
+                .catch(error => {
+                    console.error('请求错误:', error);
+                    alert('获取 OpenID 出现错误，请检查控制台日志。');
+                });
+        }
+    </script>
+</body>
+</html>
